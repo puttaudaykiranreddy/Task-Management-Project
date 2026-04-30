@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Task Manager - Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Task Manager</h2>
+            <nav>
+                <a href="/dashboard" class="nav-link active">Dashboard</a>
+                <a href="/project" class="nav-link">Projects</a>
+                <a href="#" class="nav-link" id="logoutBtn" style="margin-top: auto; color: var(--danger);">Logout</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p class="text-muted" id="welcomeMsg">Welcome back!</p>
+                </div>
+            </header>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Projects</h3>
+                    <div class="value" id="statProjects">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Tasks To Do</h3>
+                    <div class="value" id="statTodo">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>In Progress</h3>
+                    <div class="value" id="statProgress">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Completed</h3>
+                    <div class="value" id="statDone">0</div>
+                </div>
+            </div>
+
+            <!-- Overdue Tasks -->
+            <div class="card-list">
+                <div class="card-list-header">
+                    <h3>Overdue Tasks</h3>
+                </div>
+                <div id="overdueTasksContainer">
+                    <!-- Tasks will be injected here -->
+                    <div class="list-item text-muted">Loading...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+    <script>
+        // Init dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            initApp();
+            fetchDashboardStats();
+        });
+    </script>
+</body>
+</html>
