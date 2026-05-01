@@ -5,11 +5,11 @@ import os
 def get_db_connection():
     try:
         connection = mysql.connector.connect(
-            host=os.getenv("MYSQLHOST", os.getenv("DB_HOST", "localhost")),
-            user=os.getenv("MYSQLUSER", os.getenv("DB_USER", "root")),
-            password=os.getenv("MYSQLPASSWORD", os.getenv("DB_PASSWORD", "")),
-            database=os.getenv("MYSQLDATABASE", os.getenv("DB_NAME", "team_task_manager")),
-            port=os.getenv("MYSQLPORT", os.getenv("DB_PORT", "3306"))
+            host=os.getenv("MYSQLHOST") or os.getenv("MYSQL_HOST") or os.getenv("DB_HOST", "localhost"),
+            user=os.getenv("MYSQLUSER") or os.getenv("MYSQL_USER") or os.getenv("DB_USER", "root"),
+            password=os.getenv("MYSQLPASSWORD") or os.getenv("MYSQL_ROOT_PASSWORD") or os.getenv("MYSQL_PASSWORD") or os.getenv("DB_PASSWORD", ""),
+            database=os.getenv("MYSQLDATABASE") or os.getenv("MYSQL_DATABASE") or os.getenv("DB_NAME", "team_task_manager"),
+            port=os.getenv("MYSQLPORT") or os.getenv("MYSQL_PORT") or os.getenv("DB_PORT", "3306")
         )
         return connection
     except Error as e:
@@ -18,15 +18,15 @@ def get_db_connection():
 
 def init_db():
     connection = mysql.connector.connect(
-        host=os.getenv("MYSQLHOST", os.getenv("DB_HOST", "localhost")),
-        user=os.getenv("MYSQLUSER", os.getenv("DB_USER", "root")),
-        password=os.getenv("MYSQLPASSWORD", os.getenv("DB_PASSWORD", "")),
-        port=os.getenv("MYSQLPORT", os.getenv("DB_PORT", "3306"))
+        host=os.getenv("MYSQLHOST") or os.getenv("MYSQL_HOST") or os.getenv("DB_HOST", "localhost"),
+        user=os.getenv("MYSQLUSER") or os.getenv("MYSQL_USER") or os.getenv("DB_USER", "root"),
+        password=os.getenv("MYSQLPASSWORD") or os.getenv("MYSQL_ROOT_PASSWORD") or os.getenv("MYSQL_PASSWORD") or os.getenv("DB_PASSWORD", ""),
+        port=os.getenv("MYSQLPORT") or os.getenv("MYSQL_PORT") or os.getenv("DB_PORT", "3306")
     )
     cursor = connection.cursor()
     
     # Create DB if it doesn't exist
-    db_name = os.getenv("MYSQLDATABASE", os.getenv("DB_NAME", "team_task_manager"))
+    db_name = os.getenv("MYSQLDATABASE") or os.getenv("MYSQL_DATABASE") or os.getenv("DB_NAME", "team_task_manager")
     cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_name}")
     cursor.execute(f"USE {db_name}")
 
