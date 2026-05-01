@@ -152,7 +152,7 @@ def get_projects(current_user):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM projects")
-    projects = cursor.fetchall()
+    projects = [dict(row) for row in cursor.fetchall()]
     cursor.close()
     conn.close()
     return jsonify(projects)
@@ -193,7 +193,7 @@ def get_tasks(current_user):
     else:
         cursor.execute("SELECT t.*, p.title as project_title, u.name as assigned_to_name FROM tasks t JOIN projects p ON t.project_id = p.id LEFT JOIN users u ON t.assigned_to = u.id")
         
-    tasks = cursor.fetchall()
+    tasks = [dict(row) for row in cursor.fetchall()]
     cursor.close()
     conn.close()
     return jsonify(tasks)
@@ -255,11 +255,11 @@ def get_dashboard_stats(current_user):
     
     # Task stats
     cursor.execute("SELECT status, COUNT(*) as count FROM tasks GROUP BY status")
-    task_stats = cursor.fetchall()
+    task_stats = [dict(row) for row in cursor.fetchall()]
     
     # Overdue tasks
-    cursor.execute("SELECT * FROM tasks WHERE due_date < CURDATE() AND status != 'Done'")
-    overdue_tasks = cursor.fetchall()
+    cursor.execute("SELECT * FROM tasks WHERE due_date < date('now') AND status != 'Done'")
+    overdue_tasks = [dict(row) for row in cursor.fetchall()]
     
     cursor.close()
     conn.close()
@@ -276,7 +276,7 @@ def get_users(current_user):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT id, name, email, role FROM users")
-    users = cursor.fetchall()
+    users = [dict(row) for row in cursor.fetchall()]
     cursor.close()
     conn.close()
     return jsonify(users)
