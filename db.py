@@ -2,14 +2,31 @@ import mysql.connector
 from mysql.connector import Error
 import os
 
+import urllib.parse
+
 def get_db_connection():
     try:
+        db_url = os.getenv("MYSQL_URL") or os.getenv("DATABASE_URL")
+        if db_url:
+            url = urllib.parse.urlparse(db_url)
+            host = url.hostname
+            user = url.username
+            password = url.password
+            database = url.path[1:]
+            port = url.port or 3306
+        else:
+            host = os.getenv("MYSQLHOST") or os.getenv("MYSQL_HOST") or os.getenv("DB_HOST", "localhost")
+            user = os.getenv("MYSQLUSER") or os.getenv("MYSQL_USER") or os.getenv("DB_USER", "root")
+            password = os.getenv("MYSQLPASSWORD") or os.getenv("MYSQL_ROOT_PASSWORD") or os.getenv("MYSQL_PASSWORD") or os.getenv("DB_PASSWORD", "")
+            database = os.getenv("MYSQLDATABASE") or os.getenv("MYSQL_DATABASE") or os.getenv("DB_NAME", "team_task_manager")
+            port = os.getenv("MYSQLPORT") or os.getenv("MYSQL_PORT") or os.getenv("DB_PORT", "3306")
+
         connection = mysql.connector.connect(
-            host=os.getenv("MYSQLHOST") or os.getenv("MYSQL_HOST") or os.getenv("DB_HOST", "localhost"),
-            user=os.getenv("MYSQLUSER") or os.getenv("MYSQL_USER") or os.getenv("DB_USER", "root"),
-            password=os.getenv("MYSQLPASSWORD") or os.getenv("MYSQL_ROOT_PASSWORD") or os.getenv("MYSQL_PASSWORD") or os.getenv("DB_PASSWORD", ""),
-            database=os.getenv("MYSQLDATABASE") or os.getenv("MYSQL_DATABASE") or os.getenv("DB_NAME", "team_task_manager"),
-            port=os.getenv("MYSQLPORT") or os.getenv("MYSQL_PORT") or os.getenv("DB_PORT", "3306")
+            host=host,
+            user=user,
+            password=password,
+            database=database,
+            port=port
         )
         return connection
     except Error as e:
@@ -17,16 +34,31 @@ def get_db_connection():
         return None
 
 def init_db():
+    db_url = os.getenv("MYSQL_URL") or os.getenv("DATABASE_URL")
+    if db_url:
+        url = urllib.parse.urlparse(db_url)
+        host = url.hostname
+        user = url.username
+        password = url.password
+        database = url.path[1:]
+        port = url.port or 3306
+    else:
+        host = os.getenv("MYSQLHOST") or os.getenv("MYSQL_HOST") or os.getenv("DB_HOST", "localhost")
+        user = os.getenv("MYSQLUSER") or os.getenv("MYSQL_USER") or os.getenv("DB_USER", "root")
+        password = os.getenv("MYSQLPASSWORD") or os.getenv("MYSQL_ROOT_PASSWORD") or os.getenv("MYSQL_PASSWORD") or os.getenv("DB_PASSWORD", "")
+        database = os.getenv("MYSQLDATABASE") or os.getenv("MYSQL_DATABASE") or os.getenv("DB_NAME", "team_task_manager")
+        port = os.getenv("MYSQLPORT") or os.getenv("MYSQL_PORT") or os.getenv("DB_PORT", "3306")
+
     connection = mysql.connector.connect(
-        host=os.getenv("MYSQLHOST") or os.getenv("MYSQL_HOST") or os.getenv("DB_HOST", "localhost"),
-        user=os.getenv("MYSQLUSER") or os.getenv("MYSQL_USER") or os.getenv("DB_USER", "root"),
-        password=os.getenv("MYSQLPASSWORD") or os.getenv("MYSQL_ROOT_PASSWORD") or os.getenv("MYSQL_PASSWORD") or os.getenv("DB_PASSWORD", ""),
-        port=os.getenv("MYSQLPORT") or os.getenv("MYSQL_PORT") or os.getenv("DB_PORT", "3306")
+        host=host,
+        user=user,
+        password=password,
+        port=port
     )
     cursor = connection.cursor()
     
     # Create DB if it doesn't exist
-    db_name = os.getenv("MYSQLDATABASE") or os.getenv("MYSQL_DATABASE") or os.getenv("DB_NAME", "team_task_manager")
+    db_name = database
     cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_name}")
     cursor.execute(f"USE {db_name}")
 
