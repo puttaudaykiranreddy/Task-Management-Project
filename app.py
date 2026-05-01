@@ -9,7 +9,7 @@ try:
     import dotenv
     import jwt
     import bcrypt
-    import mysql.connector
+    
 except ImportError:
     print("Dependencies missing. Auto-installing from requirements.txt...")
     subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
@@ -48,8 +48,8 @@ def token_required(f):
             current_user_id = data['user_id']
             # Fetch user to pass to route
             conn = get_db_connection()
-            cursor = conn.cursor(dictionary=True)
-            cursor.execute("SELECT * FROM users WHERE id = %s", (current_user_id,))
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM users WHERE id = ?", (current_user_id,))
             current_user = cursor.fetchone()
             cursor.close()
             conn.close()
@@ -104,12 +104,12 @@ def register():
     cursor = conn.cursor()
     try:
         cursor.execute(
-            "INSERT INTO users (name, email, password, role) VALUES (%s, %s, %s, %s)",
+            "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
             (name, email, hashed_password.decode('utf-8'), role)
         )
         conn.commit()
         return jsonify({'message': 'User registered successfully!'}), 201
-    except mysql.connector.Error as err:
+    except Exception as err:
         return jsonify({'message': 'Registration failed', 'error': str(err)}), 400
     finally:
         cursor.close()
@@ -122,8 +122,8 @@ def login():
     password = data.get('password')
 
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
     user = cursor.fetchone()
     cursor.close()
     conn.close()
@@ -150,7 +150,7 @@ def login():
 @token_required
 def get_projects(current_user):
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor()
     cursor.execute("SELECT * FROM projects")
     projects = cursor.fetchall()
     cursor.close()
@@ -171,7 +171,7 @@ def create_project(current_user):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO projects (title, description, created_by) VALUES (%s, %s, %s)",
+        "INSERT INTO projects (title, description, created_by) VALUES (?, ?, ?)",
         (title, description, current_user['id'])
     )
     conn.commit()
@@ -186,10 +186,10 @@ def create_project(current_user):
 def get_tasks(current_user):
     project_id = request.args.get('project_id')
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor()
     
     if project_id:
-        cursor.execute("SELECT t.*, u.name as assigned_to_name FROM tasks t LEFT JOIN users u ON t.assigned_to = u.id WHERE t.project_id = %s", (project_id,))
+        cursor.execute("SELECT t.*, u.name as assigned_to_name FROM tasks t LEFT JOIN users u ON t.assigned_to = u.id WHERE t.project_id = ?", (project_id,))
     else:
         cursor.execute("SELECT t.*, p.title as project_title, u.name as assigned_to_name FROM tasks t JOIN projects p ON t.project_id = p.id LEFT JOIN users u ON t.assigned_to = u.id")
         
@@ -215,7 +215,7 @@ def create_task(current_user):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO tasks (project_id, title, description, status, assigned_to, due_date) VALUES (%s, %s, %s, %s, %s, %s)",
+        "INSERT INTO tasks (project_id, title, description, status, assigned_to, due_date) VALUES (?, ?, ?, ?, ?, ?)",
         (project_id, title, description, status, assigned_to, due_date)
     )
     conn.commit()
@@ -236,7 +236,7 @@ def update_task(current_user, task_id):
 
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("UPDATE tasks SET status = %s WHERE id = %s", (status, task_id))
+    cursor.execute("UPDATE tasks SET status = ? WHERE id = ?", (status, task_id))
     conn.commit()
     cursor.close()
     conn.close()
@@ -247,7 +247,7 @@ def update_task(current_user, task_id):
 @token_required
 def get_dashboard_stats(current_user):
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor()
     
     # Total projects
     cursor.execute("SELECT COUNT(*) as count FROM projects")
@@ -274,7 +274,7 @@ def get_dashboard_stats(current_user):
 @token_required
 def get_users(current_user):
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor()
     cursor.execute("SELECT id, name, email, role FROM users")
     users = cursor.fetchall()
     cursor.close()

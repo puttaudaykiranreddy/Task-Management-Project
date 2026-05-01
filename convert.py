@@ -1,4 +1,24 @@
-import sqlite3
+import os
+
+with open('app.py', 'r') as f:
+    app_code = f.read()
+
+app_code = app_code.replace('%s', '?')
+app_code = app_code.replace('cursor(dictionary=True)', 'cursor()')
+app_code = app_code.replace('import mysql.connector', '')
+app_code = app_code.replace('except mysql.connector.Error', 'except Exception')
+
+# Remove mysql-connector-python from requirements
+with open('requirements.txt', 'r') as f:
+    reqs = f.read()
+reqs = reqs.replace('mysql-connector-python==8.2.0', '')
+with open('requirements.txt', 'w') as f:
+    f.write(reqs)
+
+with open('app.py', 'w') as f:
+    f.write(app_code)
+
+db_code = '''import sqlite3
 import os
 
 DB_PATH = os.path.join(os.path.dirname(__file__), 'database.db')
@@ -35,3 +55,7 @@ def init_db():
 
 if __name__ == "__main__":
     init_db()
+'''
+
+with open('db.py', 'w') as f:
+    f.write(db_code)
