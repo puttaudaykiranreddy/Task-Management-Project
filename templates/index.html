@@ -7,56 +7,64 @@
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <div class="auth-container">
-        <!-- Login Form -->
-        <div class="auth-card" id="loginCard">
-            <h2>Welcome Back</h2>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="loginEmail">Email</label>
-                    <input type="email" id="loginEmail" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Login</button>
-                <p id="loginError" class="badge badge-danger hidden mt-1"></p>
-            </form>
-            <div class="toggle-auth">
-                Don't have an account? <a href="#" id="showRegister">Sign up</a>
+    <div class="auth-wrapper">
+        <div class="auth-hero">
+            <div class="hero-content">
+                <h1>Team Task Manager</h1>
+                <p>Manage your projects, collaborate with your team, and track your progress all in one beautiful platform.</p>
             </div>
         </div>
+        <div class="auth-container">
+            <!-- Login Form -->
+            <div class="auth-card" id="loginCard">
+                <h2>Welcome Back</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <p id="loginError" class="badge badge-danger hidden mt-1"></p>
+                </form>
+                <div class="toggle-auth">
+                    Don't have an account? <a href="#" id="showRegister">Sign up</a>
+                </div>
+            </div>
 
-        <!-- Register Form -->
-        <div class="auth-card hidden" id="registerCard">
-            <h2>Create Account</h2>
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="regName">Full Name</label>
-                    <input type="text" id="regName" class="form-control" required>
+            <!-- Register Form -->
+            <div class="auth-card hidden" id="registerCard">
+                <h2>Create Account</h2>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="regName">Full Name</label>
+                        <input type="text" id="regName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regEmail">Email</label>
+                        <input type="email" id="regEmail" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regPassword">Password</label>
+                        <input type="password" id="regPassword" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regRole">Role</label>
+                        <select id="regRole" class="form-control">
+                            <option value="Member">Member</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                    <p id="regError" class="badge badge-danger hidden mt-1"></p>
+                    <p id="regSuccess" class="badge badge-done hidden mt-1"></p>
+                </form>
+                <div class="toggle-auth">
+                    Already have an account? <a href="#" id="showLogin">Log in</a>
                 </div>
-                <div class="form-group">
-                    <label for="regEmail">Email</label>
-                    <input type="email" id="regEmail" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="regPassword">Password</label>
-                    <input type="password" id="regPassword" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="regRole">Role</label>
-                    <select id="regRole" class="form-control">
-                        <option value="Member">Member</option>
-                        <option value="Admin">Admin</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Register</button>
-                <p id="regError" class="badge badge-danger hidden mt-1"></p>
-                <p id="regSuccess" class="badge badge-done hidden mt-1"></p>
-            </form>
-            <div class="toggle-auth">
-                Already have an account? <a href="#" id="showLogin">Log in</a>
             </div>
         </div>
     </div>

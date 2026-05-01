@@ -1,10 +1,27 @@
+import os
+import sys
+import subprocess
+
+# Auto-install dependencies if they are missing
+try:
+    import flask
+    import flask_cors
+    import dotenv
+    import jwt
+    import bcrypt
+    import mysql.connector
+except ImportError:
+    print("Dependencies missing. Auto-installing from requirements.txt...")
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+    print("Dependencies installed successfully. Restarting application...")
+    os.execv(sys.executable, ['python'] + sys.argv)
+
 from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
 import jwt
 import bcrypt
 import datetime
-import os
 from functools import wraps
 from db import get_db_connection, init_db
 
